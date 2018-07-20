@@ -20,5 +20,8 @@ Route::get('products','ProductsController@index');
 Route::get('products/{id}','ProductsController@show');
 
 Route::get('/carts','CartController@index');
+Route::post('/orders','OrderController@store');
+Route::post('/orderproducts/{id}','OrderProductController@store');
+Route::get('/orderproducts','OrderProductController@index');
 
 

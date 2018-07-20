@@ -95,7 +95,7 @@
                   </form>
                 </div>
                   <div class="col-md-6">
-                  <form action="/orders/{{$product->id}}" method="POST">
+                  <form action="/orderproducts/{{$product->id}}" method="POST">
                     {{csrf_field()}}
                     Quantity :
                     <input type="number" name="quantity" >

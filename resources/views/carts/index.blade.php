@@ -90,6 +90,15 @@
                   @endforeach
                 </tbody>
               </table>
+              <p>Your total is {{$total}}</p>
+
+              <form action="/orders" method="post">
+                {{csrf_field()}}
+                <input type="hidden" value="{{$cart->id}}" name="cart_id" >
+                <input type="hidden" value="{{$total}}" name="total_price" >
+                <input class="btn btn-success" type="submit" value="Buy Now">
+            </form>
+            <a href="/products"><button class="btn btn-danger">Back</button></a>
               
     </body>
 </html>

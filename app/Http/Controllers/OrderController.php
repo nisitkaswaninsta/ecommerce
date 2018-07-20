@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\User;
-use App\Product;
 use App\Cart;
+use App\Transaction;
+use App\Order;
+use App\OrderProduct;
 
-class CartController extends Controller
+
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -16,16 +18,7 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cart = Cart::where('active',1)->where('user_id',1)->first();
-        $products = $cart->products;
-        //$price = $products->price;
-        //$quantity = $products->pivot->quantity;
-        $total = 0;
-        foreach($products as $p ){
-                $total = $total + ($p->price * $p->pivot->quantity);
-            }
-        return view('carts.index',compact('products','cart','total'));
-        
+        //
     }
 
     /**
@@ -44,22 +37,20 @@ class CartController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $id)
-    {
-        $user = User::find(1);
-        $quantity = $request->quantity;
+    public function store(Request $request)
+    {   // get the order id
+        // $order->tra
+        $cart=Cart::find($request->cart_id);
+       
+        dd($cart);
+        $order->save();
         
-        $cart = Cart::where('active',1)->where('user_id',$user->id)->first();
-        
-        if(!$cart){
-        // $cart = new Cart;
-        // $cart->user_id = $user->id;
-        // $cart->save();
-        $cart=$user->cart()->create();
-        }
 
-        $cart->products()->attach($id,['quantity'=>$quantity]);
-        return 'Added Successfully to cart';
+        $orders= Order::all();
+        $orders = $orders->last();
+    
+        $transaction = $orders->transactions()->create(['total_price' => $request->total_price]);
+        return 'Success';
     }
 
     /**
