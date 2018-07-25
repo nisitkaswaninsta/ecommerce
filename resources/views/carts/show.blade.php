@@ -7,13 +7,8 @@
     <title>Document</title>
 </head>
 <body>
-    <h3>Hi {{$user->name}}</h3>
-    <p>Here are the list of prodcuts you purchased</p>
-    <ul>
-        @foreach($product as $p)
-        <li>{{$product->name}}</li>
-        @endforeach
-    </ul>
+    <h1>Successfully added to cart</h1>
+    <a href="/carts"><button class="btn btn-primary">Add to cart</button></a>
     
 </body>
 </html>

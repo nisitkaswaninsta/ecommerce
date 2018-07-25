@@ -3,12 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\OrderProduct;
-use App\Product;
+use App\Cart;
 use App\Transaction;
-use App\User;
+use App\Order;
+use App\OrderProduct;
 
-class OrderProductController extends Controller
+
+class OrderController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -17,10 +18,7 @@ class OrderProductController extends Controller
      */
     public function index()
     {
-        $orderproduct = OrderProduct::where('user_id',1)->first();
-        $product = Product::find($orderproduct->product_id);
-        $user = User::find($orderproduct->user_id);
-        return view('orderproducts.index',compact('product','user'));
+        //
     }
 
     /**
@@ -39,23 +37,20 @@ class OrderProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$id)
-    { 
-        $product = Product::find($id);
-        $total = $product->price * $request->quantity;
-
-        $orderproduct = new OrderProduct;
-        $orderproduct->product_id = $product->id;
-        $orderproduct->user_id = 1;
-        $orderproduct->save();
-
-       $orders = OrderProduct::all();
-       $orders = $orders->last();
-
-        // $transaction = new Transaction(['total_price' => $total]);
-        $transaction = $orders->transactions()->create(['total_price'=>$total]);
-        return "Success";
+    public function store(Request $request)
+    {   // get the order id
+        // $order->tra
+        $cart=Cart::find($request->cart_id);
+       
+        $cart->order();
+        $order->save();
         
+
+        $orders= Order::all();
+        $orders = $orders->last();
+    
+        $transaction = $orders->transactions()->create(['total_price' => $request->total_price]);
+        return 'Success';
     }
 
     /**
@@ -66,11 +61,7 @@ class OrderProductController extends Controller
      */
     public function show($id)
     {
-        $orderproduct = OrderProduct::find($id);
-        $product = $orderproduct->products;
-        $user = $orderproduct->users;
-        return view('orderproducts.show',compact('product','user'));
-
+        //
     }
 
     /**

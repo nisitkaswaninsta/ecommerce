@@ -4,9 +4,13 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Cart;
-use App\Transaction;
 use App\Order;
 use App\OrderProduct;
+use App\User;
+use App\Product;
+use App\Events\OrderConfirmed;
+use App\Jobs\OrderConfirmedJob;
+use App\OrderStoreTask;
 
 
 class OrderController extends Controller
@@ -38,20 +42,41 @@ class OrderController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
-    {   // get the order id
-        // $order->tra
-        $cart=Cart::find($request->cart_id);
-       
-        dd($cart);
-        $order->save();
+    {   
+        $user = auth()->user();
+        $order = new OrderStoreTask($user);
+        $order->handle();
+        return redirect()->route('products');
         
-
-        $orders= Order::all();
-        $orders = $orders->last();
-    
-        $transaction = $orders->transactions()->create(['total_price' => $request->total_price]);
-        return 'Success';
     }
+
+    public function buynow(Request $request)
+    {   
+        $cart = auth()->user()->cart;
+        $product = $cart->products->sortBy('created_at')->last();
+        // $user = User::find(1);
+        
+        // $order = new Order;
+        // $order->user_id = $user->id;
+        // $order->save();
+
+        $order = auth()->user()->orders()->create();
+
+        
+            
+            $order->products()->attach($product->id, [
+                'quantity' => $product->pivot->quantity
+            ]);
+            
+            $cart->products()->detach($product->id);
+            // ->where('product_id', $product->id)->delete();
+
+        
+        return redirect()->route('products');
+        
+    }
+
+ 
 
     /**
      * Display the specified resource.

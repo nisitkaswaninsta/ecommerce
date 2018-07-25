@@ -22,7 +22,7 @@
                 font-family: 'Raleway', sans-serif;
                 font-weight: 100;
                 height: 100vh;
-                margin: 0;
+                margin: 30px;
             }
 
             .full-height {
@@ -69,42 +69,36 @@
         </style>
     </head>
     <body>
+        
+            
+
             <table class="table table-bordered">
-                    <thead>
-                      <tr>
-                        <th>Product Name</th>
-                        <th>Description</th>
-                        <th>Price</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>{{$product->name}}</td>
-                        <td>{{$product->description}}</td>
-                        <td>{{$product->price}}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                  <div class="row">
-                  <div class="col-md-6">
-                  <form action="/carts/{{$product->id}}" method="POST">
-                    {{csrf_field()}}
-                    Quantity :
-                    <input type="number" name="quantity" >
-                    <input class="btn btn-primary" value="Add to Cart" type="submit">
-                  </form>
-                </div>
-                  <div class="col-md-6">
-                  <form action="/buynow/{{$product->id}}" method="POST">
-                    {{csrf_field()}}
-                    Quantity :
-                    <input type="number" name="quantity" >
-                    <input class="btn btn-success" value="Buy Now" type="submit">
-                  </form>
+                <thead>
+                  <tr>
+                    <th>Product Name</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                  </tr>
+                </thead>
+                <tbody>
                   
-                </div>
-            </div>
+                  <tr>
+                    <td><a href="/products/{{$product->id}}">{{$product->name}}</a></td>
+                    <td>{{$product->pivot->quantity}}</td>
+                    <td>{{$product->price * $product->pivot->quantity }}</td>
+                  </tr>
+    
+                </tbody>
+              </table>
+              <p>Your total is {{$total}}</p>
+
+              <form action="/buynow" method="post">
+                {{csrf_field()}}
+                <input type="hidden" value="{{$cart->id}}" name="cart_id" >
+                <input type="hidden" value="{{$total}}" name="total_price" >
+                <input class="btn btn-success" type="submit" value="Buy Now">
+            </form>
             <a href="/products"><button class="btn btn-danger">Back</button></a>
-            <a href="/carts"><button class="btn btn-default">View Cart</button></a>
+              
     </body>
 </html>

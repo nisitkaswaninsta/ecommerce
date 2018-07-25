@@ -16,8 +16,9 @@ class CartController extends Controller
      */
     public function index()
     {
-        $cart = Cart::where('active',1)->where('user_id',1)->first();
+        $cart = auth()->user()->cart;
         $products = $cart->products;
+
         //$price = $products->price;
         //$quantity = $products->pivot->quantity;
         $total = 0;
@@ -46,20 +47,48 @@ class CartController extends Controller
      */
     public function store(Request $request, $id)
     {
-        $user = User::find(1);
-        $quantity = $request->quantity;
-        
-        $cart = Cart::where('active',1)->where('user_id',$user->id)->first();
-        
-        if(!$cart){
-        // $cart = new Cart;
-        // $cart->user_id = $user->id;
-        // $cart->save();
-        $cart=$user->cart()->create();
-        }
+        // $user = User::find(1);
 
-        $cart->products()->attach($id,['quantity'=>$quantity]);
-        return 'Added Successfully to cart';
+        // $userId = auth()->user()->id;
+
+        // $quantity = $request->quantity;
+        
+        // $cart = Cart::where('user_id',$user->id)->first();
+        
+        // if(!$cart){
+        //     $cart=$user->cart()->create();
+        // }
+
+        $cart = auth()->user()->cart;
+        
+        $cart->products()->attach($id,[
+            'quantity' => $request->quantity
+        ]);
+
+        return redirect()->back();
+    }
+
+    public function buynow(Request $request, $id)
+    {
+        // $user = User::find(1);
+
+        // $userId = auth()->user()->id;
+
+        // $quantity = $request->quantity;
+        
+        // $cart = Cart::where('user_id',$user->id)->first();
+        
+        // if(!$cart){
+        //     $cart=$user->cart()->create();
+        // }
+
+        $cart = auth()->user()->cart;
+        
+        $cart->products()->attach($id,[
+            'quantity' => $request->quantity
+        ]);
+
+        return redirect()->route('buynow',[$id]);
     }
 
     /**
@@ -70,7 +99,15 @@ class CartController extends Controller
      */
     public function show($id)
     {
-        //
+        $cart = auth()->user()->cart;
+
+        $product = $cart->products->sortBy('created_at')->last();
+        
+        $total = 0;
+        
+         $total = $total + ($product->price * $product->pivot->quantity);
+        
+        return view('carts.buynow',compact('product','cart','total'));
     }
 
     /**

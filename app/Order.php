@@ -9,14 +9,10 @@ class Order extends Model
     //
 
     public function products(){
-        return $this->hasMany('App\Product');
+        return $this->belongsToMany('App\Product')->withTimestamps()->withPivot('qauntity');
     }
 
-    public function transactions(){
-        return $this->morphMany('App\Transaction','transactionable');
-    }
-
-    public function carts(){
-        return $this->hasMany('App\Cart');
+    public function user(){
+        return $this->belongsTo('App\User');
     }
 }

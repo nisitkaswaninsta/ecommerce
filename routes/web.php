@@ -16,12 +16,20 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::post('/carts/{id}','CartController@store');
-Route::get('products','ProductsController@index');
+Route::get('products','ProductsController@index')->name('products');
 Route::get('products/{id}','ProductsController@show');
 
 Route::get('/carts','CartController@index');
+
 Route::post('/orders','OrderController@store');
-Route::post('/orderproducts/{id}','OrderProductController@store');
-Route::get('/orderproducts','OrderProductController@index');
+Route::post('/buynow/{id}','CartController@buynow');
+
+Route::get('buynow/{id}','CartController@show')->name('buynow');
+Route::post('/buynow','OrderController@buynow');
 
 
+
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');
